@@ -1,1 +1,1 @@
-# go-cassandra-import
+# go-import
