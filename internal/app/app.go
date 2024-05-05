@@ -11,7 +11,6 @@ import (
 	. "github.com/core-go/io/import"
 	v "github.com/core-go/io/validator"
 	"github.com/core-go/log"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gocql/gocql"
 )
 
