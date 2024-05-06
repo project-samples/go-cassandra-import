@@ -97,13 +97,13 @@ func NewApp(ctx context.Context, config Config) (*ApplicationContext, error) {
 		"env": "dev",
 	}
 	logError := NewErrorHandler(log.ErrorFields, "fileName", "lineNo", &mp)
-	//writer := q.NewStreamWriter(db, "usersimport", userType, 500)
-	writer := q.NewInserter(cluster, "users", userType)
+	writer := q.NewStreamWriter(cluster, "users", userType, 4)
+	// writer := q.NewInserter(cluster, "users", userType)
 	validator := v.NewValidator()
 	importer := NewImporter(userType, formatter.ToStruct, func(ctx context.Context, data interface{}, endLineFlag bool) error {
 		ctx = context.Background()
 		if endLineFlag {
-			// err = writer.Flush(ctx)
+			err = writer.Flush(ctx)
 			if err != nil {
 				return err
 			}

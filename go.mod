@@ -3,7 +3,7 @@ module go-service
 go 1.17
 
 require (
-	github.com/core-go/cassandra v0.1.1
+	github.com/core-go/cassandra v0.1.2
 	github.com/core-go/config v1.0.1
 	github.com/core-go/io v0.1.4
 	github.com/core-go/log v0.1.2
