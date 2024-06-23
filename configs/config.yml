@@ -1,7 +1,8 @@
 cassandra:
   public_ip: localhost
-  user_name: cassandra
-  password:  cassandra
+  username: cassandra
+  password: cassandra
+  keyspace: masterdata
 
 log:
   level: info
