@@ -35,7 +35,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		filename = "fixedlength.csv"
 	}
 	generateFileName := func() string {
-		fullPath := filepath.Join("export", filename)
+		fullPath := filepath.Join("data", filename)
 		return fullPath
 	}
 	reader, err := reader.NewDelimiterFileReader(generateFileName)
