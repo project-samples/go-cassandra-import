@@ -7,8 +7,7 @@ import (
 
 	w "github.com/core-go/cassandra/writer"
 	im "github.com/core-go/io/importer"
-	"github.com/core-go/io/reader"
-	"github.com/core-go/io/transform"
+	rd "github.com/core-go/io/reader"
 	v "github.com/core-go/io/validator"
 	"github.com/core-go/log/zap"
 	"github.com/gocql/gocql"
@@ -27,9 +26,9 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 	cluster.Authenticator = gocql.PasswordAuthenticator{Username: cfg.Cql.Username, Password: cfg.Cql.Password}
 	cluster.Keyspace = cfg.Cql.Keyspace
 
-	fileType := reader.DelimiterType
+	fileType := rd.DelimiterType
 	filename := ""
-	if fileType == reader.DelimiterType {
+	if fileType == rd.DelimiterType {
 		filename = "delimiter.csv"
 	} else {
 		filename = "fixedlength.csv"
@@ -38,11 +37,11 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		fullPath := filepath.Join("data", filename)
 		return fullPath
 	}
-	reader, err := reader.NewDelimiterFileReader(generateFileName)
+	reader, err := rd.NewFileReader(generateFileName)
 	if err != nil {
 		return nil, err
 	}
-	transformer, err := transform.NewDelimiterTransformer[User](",")
+	transformer, err := rd.NewDelimiterTransformer[User](",")
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +53,7 @@ func NewApp(ctx context.Context, cfg Config) (*ApplicationContext, error) {
 		"app": "import users",
 		"env": "dev",
 	}
-	errorHandler := im.NewErrorHandler[*User](log.ErrorFields, "fileName", "lineNo", mp)
+	errorHandler := im.NewErrorHandler[*User, string](log.ErrorFields, "fileName", "lineNo", mp)
 	writer := w.NewInserter[*User](cluster, "userimport")
 	importer := im.NewImporter[User](reader.Read, transformer.Transform, validator.Validate, errorHandler.HandleError, errorHandler.HandleException, filename, writer.Write)
 	return &ApplicationContext{Import: importer.Import}, nil
